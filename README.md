@@ -10,3 +10,4 @@ Este projeto é uma API REST desenvolvida no ambiente de execução Node.js ulti
 * [Sequelize]
 
 ...
+
