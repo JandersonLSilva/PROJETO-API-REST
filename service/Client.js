@@ -1,5 +1,5 @@
 const { DataType, Op } = require('sequelize');
-const UserModel = require('../models/User');
+const ClientModel = require('../models/Client');
 
 module.exports = {
     list: async () =>{
