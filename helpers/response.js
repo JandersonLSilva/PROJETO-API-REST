@@ -1,0 +1,8 @@
+module.exports = {
+    sucess: () => {
+
+    },
+    fail: () => {
+
+    }
+}
