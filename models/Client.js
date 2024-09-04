@@ -1,7 +1,7 @@
 const { DataType, Op } = require('sequelize');
 const sequelize = require('../helpers/db');
 
-const ClientModel = sequelize.define('client', {
+const ClientModel = sequelize.define('Client', {
     cpf: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -84,4 +84,5 @@ const ClientModel = sequelize.define('client', {
     }
 });
 
+ClientModel.hasMany('Order');
 module.exports = ClientModel;

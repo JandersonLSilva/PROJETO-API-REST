@@ -2,7 +2,7 @@ const { DataType, Op } = require('sequelize');
 const sequelize = require('../helpers/db');
 
 // Modelo de Admin
-const AdminModel = sequelize.define('admin', {
+const AdminModel = sequelize.define('Admin', {
     cpf: {
         type: DataTypes.STRING,
         allowNull: false,
