@@ -33,23 +33,23 @@ const OrderModel = sequelize.define('Order', {
     },
 
     total_value: {
-        type: {args: DataTypes.DOUBLE, msg: 'Dados inválidos. O Valor Total deve ser numérico.'}
+        type: DataTypes.DOUBLE
     },
 
     date_created: {
-        type: {args: DataTypes.DATA, msg: 'Dados inválidos. Informe um formato de Data válida.'}
+        type:DataTypes.DATE
     },
 
     time_created: {
-        type: {args: DataTypes.TIME, msg: 'Dados inválidos. Informe um formato de Horário válido.'}
+        type: DataTypes.TIME
     },
 
     date_updated: {
-        type: {args: DataTypes.DATA, msg: 'Dados inválidos. Informe um formato de Data válida.'}
+        type: DataTypes.DATE
     },
 
     time_updated: {
-        type: {args: DataTypes.TIME, msg: 'Dados inválidos. Informe um formato de Horário válido.'}
+        type: DataTypes.TIME
     }
 });
 

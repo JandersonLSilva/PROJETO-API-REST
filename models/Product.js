@@ -36,7 +36,7 @@ const ProductModel = sequelize.define('Product', {
     },
 
     value:{
-        type: { args: DataTypes.DOUBLE, msg: "Dados inválido. Preço deve ser numérico."},
+        type: DataTypes.DOUBLE,
         allowNull: false,
         validate: {
             isEmpty: {msg: "O Preço não pode ser vazio."},
@@ -62,7 +62,7 @@ const ProductModel = sequelize.define('Product', {
     },
 
     quantity:{
-        type: { args: DataTypes.INTEGER, msg: "Dados inválido. Quantidade deve ser inteiro."},
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
             isEmpty: {msg: "A Quantidade não pode ser vazio."},
