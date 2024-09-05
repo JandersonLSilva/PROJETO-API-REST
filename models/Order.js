@@ -11,7 +11,7 @@ const OrderModel = sequelize.define('Order', {
     },
 
     cpf_client: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(11),
         reference: {
             model: 'Client',
             key: 'cpf',
@@ -20,7 +20,7 @@ const OrderModel = sequelize.define('Order', {
     },
 
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(16),
         allowNull: false,
         validate: {
             isEmpty: {msg: "O Status não pode ser vazio."},
@@ -34,22 +34,6 @@ const OrderModel = sequelize.define('Order', {
 
     total_value: {
         type: DataTypes.DOUBLE
-    },
-
-    date_created: {
-        type:DataTypes.DATE
-    },
-
-    time_created: {
-        type: DataTypes.TIME
-    },
-
-    date_updated: {
-        type: DataTypes.DATE
-    },
-
-    time_updated: {
-        type: DataTypes.TIME
     }
 });
 

@@ -4,7 +4,7 @@ const sequelize = require('../helpers/db');
 // Modelo de Admin
 const AdminModel = sequelize.define('Admin', {
     cpf: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(11),
         primaryKey: true,
         allowNull: false,
         validate: {
@@ -22,7 +22,7 @@ const AdminModel = sequelize.define('Admin', {
         }
     },
     fullName: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(30),
         allowNull: false,
         validate: {
             notEmpty: {
@@ -39,7 +39,7 @@ const AdminModel = sequelize.define('Admin', {
         }
     },
     email: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(30),
         allowNull: false,
         isEmail: {
             msg: 'Insira um endereço de email válido.'
@@ -47,11 +47,15 @@ const AdminModel = sequelize.define('Admin', {
         validate: {
             notEmpty: {
                 msg: 'O E-mail não deve ser vazio.'
-            }
+            },
+            len: {
+                args: [10, 30],
+                msg: 'Email muito grande! O Email deve ter entre 10 e 30 caracteres.'
+            },
         }
     },
     contact_number: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(11),
         allowNull: false,
         validate: {
             notEmpty: {

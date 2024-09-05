@@ -10,7 +10,7 @@ const ProductModel = sequelize.define('Product', {
     },
 
     name:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
             isEmpty: {msg: "O Nome não pode ser vazio."},
@@ -23,7 +23,7 @@ const ProductModel = sequelize.define('Product', {
     },
 
     description:{
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(400),
         allowNull: false,
         validate: {
             isEmpty: {msg: "A Descrição não pode ser vazio."},
@@ -49,13 +49,13 @@ const ProductModel = sequelize.define('Product', {
     },
 
     category:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(16),
         allowNull: false,
         validate: {
             isEmpty: {msg: "A Categoria não pode ser vazio."},
             len: {
                 args: [3, 16],
-                msg: "A Categoria deve ter entre 50 e 400 caracteres."
+                msg: "A Categoria deve ter entre 3 e 16 caracteres."
             }
 
         }
