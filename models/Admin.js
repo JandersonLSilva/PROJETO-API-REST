@@ -1,10 +1,11 @@
-const { DataType, Op } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const sequelize = require('../helpers/db');
 
 // Modelo de Admin
 const AdminModel = sequelize.define('Admin', {
     cpf: {
         type: DataTypes.STRING,
+        primaryKey: true,
         allowNull: false,
         validate: {
             notEmpty: {

@@ -1,18 +1,20 @@
-const { DataType, Op, Sequelize } = require('sequelize');
+const { DataTypes, Op, Sequelize } = require('sequelize');
 const sequelize = require('../helpers/db');
+const ClientModel = require('../models/Client');
 
 const OrderModel = sequelize.define('Order', {
     id: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         allowNull: false,
         autoIncrement: true,
     },
 
     cpf_client: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         reference: {
-            model: 'client',
-            key: id,
+            model: 'Client',
+            key: 'cpf',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -51,6 +53,10 @@ const OrderModel = sequelize.define('Order', {
     }
 });
 
-OrderModel.belongsTo('Client');
+ClientModel.hasMany(OrderModel, { foreignKey: 'cpf_client'});
+OrderModel.belongsTo(ClientModel, {
+    foreignKey: 'cpf_client',
+    as: 'Client'
+});
 
 module.exports = OrderModel;

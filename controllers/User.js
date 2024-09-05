@@ -1,11 +1,10 @@
 const { sucess, fail } = require('../helpers/response');
-const UserDAO = require('../service/User');
+const ClientDAO = require('../service/ClientDAO');
+const AdminDAO = require('../service/AdminDAO');
+
 
 // USERS Controller.
 module.exports = {
-    user: async () => {
-        
-    },
     login: async () => {
         
     },

@@ -1,5 +1,5 @@
 const { sucess, fail } = require('../helpers/response');
-const OrderDAO = require('../service/Order');
+const OrderDAO = require('../service/OrderDAO');
 
 // ORDERS Controller.
 module.exports = {

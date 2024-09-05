@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // GET /install: .
-router.get('/install', );
+router.get('/install', require('../controllers/Install').install);
 
 
 // ORDERS routes.

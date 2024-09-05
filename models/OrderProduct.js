@@ -1,20 +1,25 @@
-const { DataType, Op, Sequelize } = require('sequelize');
+const { DataTypes, Op, Sequelize } = require('sequelize');
 const sequelize = require('../helpers/db');
+const ProductModel = require('../models/Product');
+const OrderModel = require('../models/Order');
+
 
 const OrderProductModel = sequelize.define('Order_Product', {
     id_product: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         reference: {
             model: 'Client',
-            key: id,
+            key: 'id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     },
     id_order: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         reference: {
             model: 'Order',
-            key: id,
+            key: 'id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     },
@@ -31,7 +36,7 @@ const OrderProductModel = sequelize.define('Order_Product', {
     }
 });
 
-OrderProductModel.belongsToMany('Order', {through: 'Order_Product'});
-OrderProductModel.belongsToMany('Product', {through: 'Order_Product'});
+OrderProductModel.belongsToMany(OrderModel, {through: 'Order_Product'});
+OrderProductModel.belongsToMany(ProductModel, {through: 'Order_Product'});
 
 module.exports = OrderProductModel;
