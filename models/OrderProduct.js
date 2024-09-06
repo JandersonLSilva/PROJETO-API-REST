@@ -27,9 +27,9 @@ const OrderProductModel = sequelize.define('Order_Product', {
         type: DataTypes.DOUBLE,
         allowNull: false,
         validate: {
-            isEmpty: {msg: "O Preço não pode ser vazio."},
+            notEmpty: {msg: "O Preço não pode ser vazio."},
             min: {
-                args: 0.01,
+                args: [0.01],
                 msg: "O Preço deve ser positivo."
             }
         }

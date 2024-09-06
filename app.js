@@ -1,13 +1,12 @@
 var express = require('express');
 var path = require('path');
-
-// var  = require('./');
-// var  = require('./');
+var bodyParser = require('body-parser')
+const jwt = require("jsonwebtoken")
 
 var app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 require("dotenv").config();
 

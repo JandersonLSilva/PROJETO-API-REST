@@ -1,9 +1,8 @@
 module.exports = {
-    sucess: (object, property, title, message) => {
+    sucess: (object, property, msg) => {
         let response = {
             status: true, 
-            title: title, 
-            message: message
+            resp: msg
         };
 
         if(property)
