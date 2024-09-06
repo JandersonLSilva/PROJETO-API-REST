@@ -1,15 +1,16 @@
 var express = require('express');
 var router = express.Router();
-// const middl = require()
+const {isAdmin} = require('../middlewares/isAdmin');
+const {authenticateToken} = require('../middlewares/authenticateToken');
 
 // GET /install: .
 router.get('/install', require('../controllers/Install').install);
 
 
 // ORDERS routes.
-    // GET /orders: Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
+    // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     const order = require('../controllers/Order');  
-    router.get('/orders', order.getOrdersUser);
+    router.get('/orders/:page/:limit', order.getOrdersUser);
 
     // POST /orders: Cria um novo pedido.
     router.post('/orders', order.postOrder);
@@ -25,9 +26,9 @@ router.get('/install', require('../controllers/Install').install);
 
 
 // PRODUCTS routes.
-    // GET /products: Retorna todos os produtos.
+    // GET /products/:page/:limit Retorna todos os produtos.
     const products = require('../controllers/Product');
-    router.get('/products', products.getProducts);
+    router.get('/products/:page/:limit', products.getProducts);
 
     // POST /products: Cria um novo produto (somente administradores).
     router.post('/products', products.postProduct);
@@ -45,23 +46,24 @@ router.get('/install', require('../controllers/Install').install);
 // USERS routes.
     const user = require('../controllers/User');
     // SOMENTE ADMINISTRADORES:
-        // GET /user: Retorna todos os usuários (somente administradores).
-        router.get('/users', require('../middlewares/isAdmin').isAdmin, user.getUsers);
+        // GET /user/:page/:limit Retorna todos os usuários (somente administradores).
+        router.get('/users/:page/:limit', authenticateToken, isAdmin, user.getUsers);
 
         // GET /user/:cpf: Retorna um usuário em específico (somente administradores).
-        router.get('/users/:cpf', user.getUserByCpf);
-        router.post('/users', user.postUser);
+        router.get('/users/:cpf', authenticateToken, isAdmin, user.getUserByCpf);
 
         // PUT /user/:cpf: Atualiza um usuário (somente administradores) ou o próprio usuário.
-        router.put('/users/:cpf', user.putUserByCpf);
+        router.put('/users/:cpf', authenticateToken, isAdmin, user.putUserByCpf);
 
         // DELETE /user/:cpf: Deleta um usuário (somente administradores).
-        router.delete('/users/:cpf', user.deleteUserByCpf);
+        router.delete('/users/:cpf', authenticateToken, isAdmin, user.deleteUserByCpf);
+
+        // POST /signup: Cadastra um novo administrador.
+        router.post('/admin/signup', authenticateToken, isAdmin, user.signupAdmin);
 
     // QUALQUER CLINTE:
         // POST /signup: Cadastra um novo usuário.
-        router.post('admin/signup', user.signupAdmin);
-        router.post('user/signup', user.signup);
+        router.post('/users/signup', user.signup);
 
         // POST /login: Faz o login no usuário especificado.
         router.post('/login', user.login);

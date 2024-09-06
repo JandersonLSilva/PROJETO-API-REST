@@ -5,7 +5,8 @@ const ProductDAO = require('../service/ProductDAO');
 module.exports = {
     // GET /products: Retorna todos os produtos.
     getProducts: async function(req, res) {
-        let products = await ProductDAO.list();
+        const {page, limit} = req.params;
+        let products = await ProductDAO.list(page, limit);
 
         if (products.length === 0) res.json(response.fail(
                 'Nenhum Produto encontrado no banco de dados!', 

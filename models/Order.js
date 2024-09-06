@@ -10,7 +10,7 @@ const OrderModel = sequelize.define('Order', {
         autoIncrement: true,
     },
 
-    cpf_client: {
+    cpf_user: {
         type: DataTypes.STRING(11),
         reference: {
             model: 'User',
@@ -37,9 +37,9 @@ const OrderModel = sequelize.define('Order', {
     }
 });
 
-UserModel.hasMany(OrderModel, { foreignKey: 'cpf_client'});
+UserModel.hasMany(OrderModel, { foreignKey: 'cpf_user'});
 OrderModel.belongsTo(UserModel, {
-    foreignKey: 'cpf_client',
+    foreignKey: 'cpf_user',
     as: 'Client'
 });
 

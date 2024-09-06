@@ -20,7 +20,6 @@ module.exports = {
             {code: 'USER_NOT_FOUND', status: 404})
         );
         else {
-            // console.log(user.role);
             (user.role === 'admin') ? next() : res.json({auth: false, msg: 'Você precisa ser um Administrador para acessar essa opção!'});
         }
     }

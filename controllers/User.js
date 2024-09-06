@@ -2,14 +2,15 @@ const response = require('../helpers/response');
 const UserDAO = require('../service/UserDAO');
 const TokenDAO = require('../service/TokenDAO');
 const TokenModel = require('../models/Token');
-// const {authenticateToken} = require('../middlewares/authenticateToken');
+const {isAdmin} = require('../middlewares/isAdmin');
 const jwt = require("jsonwebtoken");
 
 // USERS Controller.
 module.exports = {
     // GET /users: Retorna todos os usuários.
     getUsers: async function(req, res) {
-        let users = await UserDAO.list();
+        const {page, limit} = req.params;
+        let users = await UserDAO.list(page, limit);
 
         if (users.length === 0) res.json(response.fail(
                 'Nenhum Usuário encontrado no banco de dados!', 
@@ -93,7 +94,7 @@ module.exports = {
         else {
             if(user.password === password){
                 
-                let tokensByCpf = await TokenModel.findAll({where: {cpf_client: cpf}});
+                let tokensByCpf = await TokenModel.findAll({where: {cpf_user: cpf}});
                 tokensByCpf.forEach(tokenByCpf => {
                     TokenDAO.delete(tokenByCpf.id);
                 });
@@ -105,23 +106,23 @@ module.exports = {
             else res.json(response.fail('Senha Informada Inválida!', {code: 'USER_PASSWORD_INCORRECT', msg: "Verifique a senha e tente novamente!" }));
         }
     },
-    signup: async (req, res, next) => {
-        if(idAdmin()) next();
+    signup: async (req, res) => {
 
-        const {cpf, fullName, email, contact_number, address} = req.body;
+        const {cpf, password, fullName, email, contact_number, address} = req.body;
 
-        UserDAO.save(cpf, fullName, email, contact_number, address, 'client').then(user =>{
-            res.json(response.sucess(user, 'Client', 'Cliente Inserido.'));
+        UserDAO.save(cpf, password, fullName, email, contact_number, address, 'client').then(user =>{
+            res.json(response.sucess(user, 'user', 'Usuário Inserido.'));
         }).catch(err =>{
             res.json(response.fail('Erro Inesperado!', err));
         });
     },
     signupAdmin: async (req, res) => {
+        if(isAdmin) next();
         
-        const {cpf, fullName, email, contact_number, address, role} = req.body;
+        const {cpf, password, fullName, email, contact_number, address, role} = req.body;
 
-        UserDAO.save(cpf, fullName, email, contact_number, address, role).then(user =>{
-            res.json(response.sucess(user, 'Admin', 'Administrador Inserido.'));
+        UserDAO.save(cpf, password, fullName, email, contact_number, address, role).then(user =>{
+            res.json(response.sucess(user, 'user', 'Administrador Inserido.'));
         }).catch(err =>{
             res.json(response.fail('Erro Inesperado!', err));
         });

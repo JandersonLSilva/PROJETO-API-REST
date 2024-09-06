@@ -10,7 +10,7 @@ const TokenModel = sequelize.define('Token', {
         autoIncrement: true,
     },
 
-    cpf_client: {
+    cpf_user: {
         type: DataTypes.STRING(11),
         reference: {
             model: 'User',
@@ -32,9 +32,9 @@ const TokenModel = sequelize.define('Token', {
     }
 
 });
-UserModel.belongsTo(TokenModel, { foreignKey: 'cpf_client'});
+UserModel.belongsTo(TokenModel, { foreignKey: 'cpf_user'});
 TokenModel.belongsTo(UserModel, {
-    foreignKey: 'cpf_client',
+    foreignKey: 'cpf_user',
     as: 'Client'
 });
 module.exports = TokenModel;

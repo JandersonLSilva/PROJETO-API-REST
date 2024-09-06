@@ -4,7 +4,8 @@ const OrderDAO = require('../service/OrderDAO');
 // ORDERS Controller.
 module.exports = {
     getOrdersUser: async function(req, res) {
-        let orders = await OrderDAO.list();
+        const {page, limit} = req.params;
+        let orders = await OrderDAO.list(page, limit);
 
         if (orders.length === 0) res.json(response.fail(
                 'Nenhum Pedido encontrado no banco de dados!', 

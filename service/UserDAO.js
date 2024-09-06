@@ -2,8 +2,9 @@ const { Sequelize, DataTypes, Op } = require('sequelize');
 const UserModel = require('../models/User');
 
 module.exports = {
-    list: async () =>{
-        return await UserModel.findAll();
+    list: async (page, limit) =>{
+        let offset = (page - 1) * limit;
+        return await UserModel.findAll({ offset: offset, limit: Number(limit) });
     },
     save: async (cpf, password, fullName, email, contact_number, address, role) =>{
         return await UserModel.create({

@@ -2,8 +2,9 @@ const { DataTypes, Op } = require('sequelize');
 const OrderProductModel = require('../models/OrderProduct');
 
 module.exports = {
-    list: async () =>{
-        return await OrderProductModel.findAll();
+    list: async (page, limit) =>{
+        const offset = (page - 1) * limit;
+        return await OrderProductModel.findAll({ offset: offset, limit: Number(limit) });
     },
     save: async (id_product, id_order, value_unit) =>{
         return await OrderProductModel.create({

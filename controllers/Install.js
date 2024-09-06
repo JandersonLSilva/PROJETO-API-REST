@@ -12,11 +12,11 @@ module.exports = {
         await sequelize.sync({force: true});
 
         
-        UserDAO.save('00000000000', 'admin', 'adminadmin', 'admin@gmail.com', '00200000000', 'Rua Admin, 003223','admin').then(user =>{
-            res.json(response.sucess(user, 'Admin', 'Administrador Inserido.'));
+        UserDAO.save('00000000000', 'admin', 'adminadmin', 'admin@gmail.com', '00000000000', 'Rua Admin, 000','admin').then(user =>{
+            console.log(response.sucess(user, 'Admin', 'Administrador Inserido.'));
+            res.json({status: true, msg: "Banco de Dados Instalado com Sucesso!"});
         }).catch(err =>{
             res.json(response.fail('Erro Inesperado!', err));
         });
-        // res.json({status: true, msg: "Banco de Dados Instalado com Sucesso!"});
     }
 };
