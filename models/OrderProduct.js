@@ -9,7 +9,7 @@ const OrderProductModel = sequelize.define('Order_Product', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         reference: {
-            model: 'Client',
+            model: 'Product',
             key: 'id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
@@ -21,17 +21,6 @@ const OrderProductModel = sequelize.define('Order_Product', {
             model: 'Order',
             key: 'id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-    },
-    value_unit: {
-        type: DataTypes.DOUBLE,
-        allowNull: false,
-        validate: {
-            notEmpty: {msg: "O Preço não pode ser vazio."},
-            min: {
-                args: [0.01],
-                msg: "O Preço deve ser positivo."
-            }
         }
     }
 });

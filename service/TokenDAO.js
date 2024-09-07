@@ -5,9 +5,9 @@ module.exports = {
     list: async () =>{
         return await TokenModel.findAll();
     },
-    save: async (cpf_client, token, expires_at) =>{
+    save: async (cpf_user, token, expires_at) =>{
         return await TokenModel.create({
-            cpf_client: cpf_client,
+            cpf_user: cpf_user,
             token: token,
             expires_at: expires_at
         });

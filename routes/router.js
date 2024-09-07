@@ -10,19 +10,19 @@ router.get('/install', require('../controllers/Install').install);
 // ORDERS routes.
     // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     const order = require('../controllers/Order');  
-    router.get('/orders/:page/:limit', order.getOrdersUser);
+    router.get('/orders/:page/:limit', authenticateToken, isAdmin, order.getOrdersUser);
 
     // POST /orders: Cria um novo pedido.
-    router.post('/orders', order.postOrder);
+    router.post('/orders', authenticateToken, isAdmin, order.postOrder);
 
     // GET /orders/:id: Retorna um pedido em específico.
-    router.get('/orders/:id', order.getOrderById);
+    router.get('/orders/:id', authenticateToken, order.getOrderById);
 
     // PUT /orders/:id: Atualiza um pedido.
-    router.put('/orders/:id', order.putOrderById);
+    router.put('/orders/:id', authenticateToken, isAdmin, order.putOrderById);
 
     // DELETE /orders/:id: Deleta um pedido.
-    router.delete('/orders/:id', order.deleteOrderById);
+    router.delete('/orders/:id', authenticateToken, isAdmin, order.deleteOrderById);
 
 
 // PRODUCTS routes.
@@ -31,16 +31,16 @@ router.get('/install', require('../controllers/Install').install);
     router.get('/products/:page/:limit', products.getProducts);
 
     // POST /products: Cria um novo produto (somente administradores).
-    router.post('/products', products.postProduct);
+    router.post('/products', authenticateToken, products.postProduct);
 
     // GET /products/:id: Retorna um produto em específico.
     router.get('/products/:id', products.getProductById);
 
     // PUT /products/:id: Atualiza um produto.
-    router.put('/products/:id', products.putProductById);
+    router.put('/products/:id', authenticateToken, products.putProductById);
 
     // DELETE /products/:id: Deleta um produto.
-    router.delete('/products/:id', products.deleteProductById);
+    router.delete('/products/:id', authenticateToken, products.deleteProductById);
 
 
 // USERS routes.

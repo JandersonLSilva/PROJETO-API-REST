@@ -6,15 +6,17 @@ module.exports = {
         const offset = (page - 1) * limit;
         return await OrderModel.findAll({ offset: offset, limit: Number(limit) });
     },
-    save: async (cpf_client, status) =>{
+    save: async (cpf_user, status, total_value) =>{
         return await OrderModel.create({
-            cpf_client: cpf_client,
-            status: status
+            cpf_user: cpf_user,
+            status: status,
+            total_value: total_value
         });
     },
-    update: async (id, status) =>{
+    update: async (id, status, total_value) =>{
         return await OrderModel.update({
-            status: status
+            status: status,
+            total_value: total_value
 
         }, {where: {id: id}});
     },

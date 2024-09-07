@@ -13,10 +13,7 @@ module.exports = {
         
     },
     fail: (message, error) => {
-        return {
-            status: false, 
-            message: message,
-            error: error
-        };
+        if (error) return { status: false, message: message, error: error };
+        else return { status: false, message: message };
     }
 }
