@@ -14,21 +14,26 @@ module.exports = {
                 {code: 'ORDERS_NOT_FOUND', status: 404})
         );
         else {
-            const Orders = [];
-            let i;
-            for(i = 0; i < orders.length; i++){
-                console.log(orders[i].id);
-                OrderProductModel.findAll({where: {id_order: orders[i].id}}).then(products_id => {
-                    orders[i]['products_id'] = products_id;
-                    console.log(products_id);
-                    Orders.push(orders[i]);
+            for(let i = 0; i < orders.length; i++){
+                let order_products = await OrderProductModel.findAll({where: {id_order: orders[i].id}});
+                let products_id = [];
 
-                }).catch (err => { console.log(response.fail('Erro ao tentar listar os dados!', err)) });
+                order_products.forEach(order_product => {
+                    orders.forEach(order => {
+                        if(order.id === order_product.dataValues.id_order)
+                            products_id.push(order_product.dataValues.id_product)
+
+                    });
+                    
+                });
+                    
+                orders[i].dataValues['products_id'] = products_id;
             }
-            if(i === orders.length) res.json(response.sucess(Orders, 'Order', 'Listando Pedidos.'));
+            res.json(response.sucess(orders, 'Order', 'Listando Pedidos.'));
 
         }
     },
+
     // POST /orders: Cria um novo pedido.
     postOrder: async function(req, res) {
         const {cpf_user, status, total_value, products_id} = req.body;
@@ -39,12 +44,13 @@ module.exports = {
             let i;
             for (i = 0; i < products_id.length; i++) {
                 try {
-                    await OrderProductDAO.save(products_id[i].id, order.id);
+                    ord_prod = await OrderProductDAO.save(products_id[i].id, order.id);
                     products.push(products_id[i].id);
-                } catch (err) {
-                    throw err;
-                }
-            } if(i === products_id.length) res.json(response.sucess({ order: order, products_id: products }, 'Order', 'Pedido Inserido.'));
+
+                } catch (err) { throw err;}
+            } 
+
+            res.json(response.sucess({ order: order, products_id: products }, 'Order', 'Pedido Inserido.'));
 
         } catch(err) {
             res.json(response.fail('Erro ao tentar salvar os dados!', err));
@@ -54,23 +60,25 @@ module.exports = {
     // PUT /orders/:id: Atualiza um pedido.
     putOrderById: async function(req, res) {
         const {id} = req.params;
-        const {status} = req.body;
+        const {status, total_value, products_id} = req.body;
 
-        OrderDAO.update(id, status).then(ret =>{
+        try {
+            const order = await OrderDAO.save(cpf_user, status, total_value);
+            const products = [];
+            let i;
+            for (i = 0; i < products_id.length; i++) {
+                try {
+                    await OrderProductDAO.save(products_id[i].id, order.id);
+                    products.push(products_id[i].id);
 
-            if(ret[0] !== 0) OrderDAO.getById(id)
-                .then(order => {res.json(response.sucess(order, 'order', 'Pedido Atualizado.'))})
-                .catch(err=>{
-                    res.json(response.fail('Erro Inesperado!', err));
-                }); 
-                
-            else res.json(response.fail(
-                'Nenhum Pedido encontrado com esse id no banco de dados!', 
-                {code: 'ORDER_NOT_FOUND', status: 404})
-            );
-        }).catch(err =>{
-            res.json(response.fail('Erro Inesperado!', err));
-        });
+                } catch (err) {
+                    throw err;
+                }
+            } if(i === products_id.length) res.json(response.sucess({ order: order, products_id: products }, 'Order', 'Pedido Inserido.'));
+
+        } catch(err) {
+            res.json(response.fail('Erro ao tentar salvar os dados!', err));
+        }
     },
     
     // DELETE /orders/:id: Deleta um pedido.

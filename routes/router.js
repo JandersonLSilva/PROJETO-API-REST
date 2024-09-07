@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {isAdmin} = require('../middlewares/isAdmin');
-const {authenticateToken} = require('../middlewares/authenticateToken');
+const {isAdmin, authenticateToken} = require('../middlewares_utils/middlewares');
 
 // GET /install: .
 router.get('/install', require('../controllers/Install').install);
