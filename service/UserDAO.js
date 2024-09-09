@@ -17,9 +17,10 @@ module.exports = {
             role: role
         });
     },
-    update: async (cpf, fullName, email, contact_number, address) =>{
+    update: async (cpf, password, fullName, email, contact_number, address) =>{
         return await UserModel.update({
-            fullName: fullName, 
+            fullName: fullName,
+            password: password,
             email: email, 
             contact_number: contact_number, 
             address: address

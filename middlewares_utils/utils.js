@@ -2,30 +2,27 @@ const response = require('../helpers/response');
 const UserDAO = require('../service/UserDAO');
 const jwt = require('jsonwebtoken');
 
-module.exports = {
-    isAdmin: async (req, res) => {
-        ret = this.verifyToken(req);
-
-        if(ret instanceof Error) {
-            console.log({auth: false, msg: 'Não foi possível validar esse token!'});
-            return false;
-        }
-
-        let user = await UserDAO.getByCpf(ret.id.cpf);
-        console.log(user.role)
-        return (user.role === 'admin') ? true : false;
-        
-    },
-    verifyToken: (req) => {
+module.exports.verifyToken = async (req) => 
+    {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
 
-        jwt.verify(token, process.env.SECRET, (err, decoded) => {
-            if(err) {
-                return err;
-            }
-            else return decoded;
-            
-        });
+        try {
+            const decoded = jwt.verify(token, process.env.SECRET);
+            return decoded;
+        }
+        catch(err){
+            return err;
+        }
     }
-}
+
+module.exports.isAdmin = async (req) => 
+    {
+        let ret = await this.verifyToken(req);
+
+        if(ret instanceof Error) return false;
+        
+        let user = await UserDAO.getByCpf(ret.id.cpf);
+        return (user.role === 'admin') ? true : false;
+        
+    }

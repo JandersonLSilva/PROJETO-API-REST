@@ -6,6 +6,7 @@ module.exports = {
     // GET /products: Retorna todos os produtos.
     getProducts: async function(req, res) {
         const {page, limit} = req.params;
+
         let products = await ProductDAO.list(page, limit);
 
         if (products.length === 0) res.json(response.fail(
@@ -17,16 +18,26 @@ module.exports = {
 
     // POST /products: Cria um novo produto (somente administradores).
     postProduct: async function(req, res) {
-        const {name, description, value, category, quantity} = req.body;
+        const products = req.body;
+        let return_products = [];
 
-        ProductDAO.save(name, description, value, category, quantity).then(product =>{
-            res.json(response.sucess(product, 'product', 'Produto Inserido.'));
-        }).catch(err =>{
-            res.json(response.fail('Erro Inesperado!', err));
-        });
-
+        try{ 
+            if(Array.isArray(return_products) && products){
+                for(let i = 0; i < products.length; i++)
+                    return_products.push( await ProductDAO.save(products[i].name, products[i].description, products[i].value, products[i].category, products[i].quantity));
+                res.json(response.sucess(return_products, 'products', 'Produto(s) Inserido(s).'));
+            } 
+            else if(products) {
+                return_products.push( await ProductDAO.save(products.name, products.description, products.value, products.category, products.quantity));
+                res.json(response.sucess(return_products, 'products', 'Produto(s) Inserido(s).'));
+            }
+            else res.json(response.fail('Inserção de forma inválida dos dados!'));
+        }
+        catch(err) { 
+            res.json(response.fail('Inserção de forma inválida dos dados!', err));
+        }
     },
-
+   
     // PUT /products/:id: Atualiza um produto.
     putProductById: async function(req, res) {
         const {id} = req.params;

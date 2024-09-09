@@ -2,9 +2,11 @@ const { DataTypes, Op } = require('sequelize');
 const OrderModel = require('../models/Order');
 
 module.exports = {
-    list: async (page, limit) =>{
+    list: async (page, limit, cpf) =>{
         const offset = (page - 1) * limit;
-        return await OrderModel.findAll({ offset: offset, limit: Number(limit) });
+        return (cpf) ? await OrderModel.findAll({ offset: offset, limit: Number(limit), where: {cpf_user: cpf} }) 
+                     : await OrderModel.findAll({ offset: offset, limit: Number(limit) });
+        
     },
     save: async (cpf_user, status, total_value) =>{
         return await OrderModel.create({

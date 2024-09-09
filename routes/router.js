@@ -30,16 +30,16 @@ router.get('/install', require('../controllers/Install').install);
     router.get('/products/:page/:limit', products.getProducts);
 
     // POST /products: Cria um novo produto (somente administradores).
-    router.post('/products', authenticateToken, products.postProduct);
+    router.post('/products', authenticateToken, isAdmin, products.postProduct);
 
     // GET /products/:id: Retorna um produto em específico.
     router.get('/products/:id', products.getProductById);
 
     // PUT /products/:id: Atualiza um produto.
-    router.put('/products/:id', authenticateToken, products.putProductById);
+    router.put('/products/:id', authenticateToken, isAdmin, products.putProductById);
 
     // DELETE /products/:id: Deleta um produto.
-    router.delete('/products/:id', authenticateToken, products.deleteProductById);
+    router.delete('/products/:id', authenticateToken, isAdmin, products.deleteProductById);
 
 
 // USERS routes.
@@ -52,19 +52,23 @@ router.get('/install', require('../controllers/Install').install);
         router.get('/users/:cpf', authenticateToken, isAdmin, user.getUserByCpf);
 
         // PUT /user/:cpf: Atualiza um usuário (somente administradores) ou o próprio usuário.
-        router.put('/users/:cpf', authenticateToken, isAdmin, user.putUserByCpf);
+        router.put('/users/:cpf', authenticateToken, user.putUserByCpf);
 
         // DELETE /user/:cpf: Deleta um usuário (somente administradores).
         router.delete('/users/:cpf', authenticateToken, isAdmin, user.deleteUserByCpf);
 
         // POST /signup: Cadastra um novo administrador.
-        router.post('/admin/signup', authenticateToken, isAdmin, user.signupAdmin);
+        router.post('/admin/signup', authenticateToken, isAdmin, user.signup);
 
-    // QUALQUER CLINTE:
+    // QUALQUER USUÁRIO:
         // POST /signup: Cadastra um novo usuário.
         router.post('/users/signup', user.signup);
 
         // POST /login: Faz o login no usuário especificado.
         router.post('/login', user.login);
+
+    // QUALQUER CLIENTE:
+        // POST /user: Retorna os dados do usuário logado/token.
+        router.get('/user', authenticateToken, user.getUser);
 
 module.exports = router;

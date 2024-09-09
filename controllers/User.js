@@ -22,28 +22,35 @@ module.exports = {
     // PUT /users/:cpf: Atualiza um usuário.
     putUserByCpf: async function(req, res) {
         const {cpf} = req.params;
-        let return_users;
+        const { password, fullName, email, contact_number, address } = req.body;
+        let return_user;
+        let ret = await verifyToken(req);
         try{
-            if(isAdmin(req, res)){
+            if(await isAdmin(req, res)){
+                await UserDAO.update(cpf, password, fullName, email, contact_number, address);
             }
             else{
-                if(cpf == verifyToken(req).id.cpf) {
-                    return_users = await UserDAO.update(cpf, password, fullName, email, contact_number, address, 'client');
-                } 
-                else res.json(response.fail('O CPF digitado não bate com o cadastrado')) 
+                if(cpf === ret.id.cpf) 
+                    await UserDAO.update(cpf, password, fullName, email, contact_number, address);
+                else{
+                    res.json(response.fail('O CPF digitado não bate com o cadastrado')) 
+                    return;
+                }
             }
+            return_user = await UserDAO.getByCpf(cpf);
         }
         catch(err) { 
-            res.json(response.fail(err.errors[0].message, err))
+            res.json(response.fail('Dados inválidos', err))
+            return;
         };
 
-        if(return_users.length !== 0) res.json(response.sucess(return_users, 'user', 'Usuário(s) Inserido(s).'));
-        else res.json(response.fail('Dados inválidos! '));
+        if(return_user) res.json(response.sucess(return_user, 'user', 'Usuário Atualizado.'));
+        else res.json(response.fail('Dados inválidos!'));
     },
 
     // DELETE /users/:cpf: Deleta um usuário.
     deleteUserByCpf: async function(req, res) {
-        const {cpf} = req.params;
+        const { cpf } = req.params;
 
         let UserByCpf = await UserDAO.getByCpf(cpf);
 
@@ -69,6 +76,14 @@ module.exports = {
         else res.json(response.sucess(user, 'user', 'Usuário Retornado.'));
         
     },
+    getUser: async (req, res) => {
+        let decoded = await verifyToken(req);
+
+        console.log(decoded);
+        let user = await UserDAO.getByCpf(decoded.id.cpf);
+        
+        res.json(response.sucess(user, 'user', 'Dados do Usuário.'));
+    },
 
     login: async (req, res) => {
         const {cpf, password} = req.body;
@@ -82,10 +97,8 @@ module.exports = {
         else {
             if(user.password === password){
                 
-                let tokensByCpf = await TokenModel.findAll({where: {cpf_user: cpf}});
-                tokensByCpf.forEach(tokenByCpf => {
-                    TokenDAO.delete(tokenByCpf.id);
-                });
+                let tokenByCpf = await TokenModel.findOne({where: {cpf_user: cpf}}); 
+                TokenDAO.delete(tokenByCpf.id);
                 
                 const token = jwt.sign({ id: {cpf: user.cpf, email: user.email, fullName: user.fulName, role: user.role}}, process.env.SECRET, {expiresIn: expiresIn});
                 await TokenDAO.save(cpf, token, expiresIn);
@@ -94,45 +107,26 @@ module.exports = {
             else res.json(response.fail('Senha Informada Inválida!', {code: 'USER_PASSWORD_INCORRECT', msg: "Verifique a senha e tente novamente!" }));
         }
     },
-    signup: async (req, res) => {
+    signup: async (req, res) => { // testar nova implemetação 
         const users = req.body;
-        let return_users = [];;
+        let return_users = [];
 
-        try{   
-            for(let i = 0; i < users.length; i++){
-                return_users.push( await UserDAO.save(users[i].cpf, users[i].password, users[i].fullName, users[i].email, users[i].contact_number, users[i].address, 'client'));
+        try{ 
+            if(Array.isArray(users) && users){
+                for(let i = 0; i < users.length; i++)
+                    return_users.push( await UserDAO.save(users[i].cpf, users[i].password, users[i].fullName, users[i].email, users[i].contact_number, users[i].address, (await isAdmin(req)) ? users[i].role : 'client'));
+                res.json(response.sucess(return_users, 'user', 'Usuário(s) Inserido(s).'));
+            } 
+            else if(users) {
+                return_users.push( await UserDAO.save(users.cpf, users.password, users.fullName, users.email, users.contact_number, users.address, (await isAdmin(req)) ? users.role : 'client'));
+                res.json(response.sucess(return_users, 'user', 'Usuário(s) Inserido(s).'));
             }
-            if((return_users.length === 0) && users){
-                return_users.push(await UserDAO.save(users.cpf, users.password, users.fullName, users.email, users.contact_number, users.address, 'client'));
-            }
+            else res.json(response.fail('Inserção de forma inválida dos dados!'));
         }
         catch(err) { 
-            res.json(response.fail('Inserção de forma inválida dos dados!', err)); return;
-        };
-            
-        if(return_users.length !== 0) res.json(response.sucess(return_users, 'user', 'Usuário(s) Inserido(s).'));
-        else res.json(response.fail('Inserção de forma inválida dos dados!'));
+            res.json(response.fail('Inserção de forma inválida dos dados!', err));
+        }      
     },
-
-    signupAdmin: async (req, res) => {
-        const users = req.body;
-        let return_users = [];;
-
-        try{   
-            for(let i = 0; i < users.length; i++){
-                return_users.push( await UserDAO.save(users[i].cpf, users[i].password, users[i].fullName, users[i].email, users[i].contact_number, users[i].address, users[i].role));
-            }
-            if((return_users.length === 0) && users){
-                return_users.push(await UserDAO.save(users.cpf, users.password, users.fullName, users.email, users.contact_number, users.address, users.role));
-            }
-        }
-        catch(err) { 
-            res.json(response.fail('Inserção de forma inválida dos dados!', err)); return;
-        };
-            
-        if(return_users.length !== 0) res.json(response.sucess(return_users, 'user', 'Administrador(s) Inserido(s).'));
-        else res.json(response.fail('Inserção de forma inválida dos dados!'));
-    }
 };
     // GET /user: Retorna todos os usuários (somente administradores).
 
