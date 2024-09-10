@@ -5,15 +5,6 @@ const OrderModel = require('../models/Order');
 
 
 const OrderProductModel = sequelize.define('Order_Product', {
-    id_product: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        reference: {
-            model: 'Product',
-            key: 'id',
-            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-    },
     id_order: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -22,7 +13,17 @@ const OrderProductModel = sequelize.define('Order_Product', {
             key: 'id',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
+    },
+    id_product: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        reference: {
+            model: 'Product',
+            key: 'id',
+            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
     }
+    
 });
 
 OrderProductModel.belongsToMany(OrderModel, {through: 'Order_Product'});

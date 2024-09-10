@@ -6,17 +6,17 @@ module.exports = {
         const offset = (page - 1) * limit;
         return await OrderProductModel.findAll({ offset: offset, limit: Number(limit) });
     },
-    save: async (id_product, id_order) =>{
+    save: async (id_order, id_product) =>{
         return await OrderProductModel.create({
             id_product: id_product,
             id_order: id_order
         });
     },
     
-    delete: async (id) =>{
-        return await OrderProductModel.destroy({where: {id: id}});
+    delete: async (id_order) =>{
+        return await OrderProductModel.destroy({where: {id_order: id_order}});
     },
-    getById: async (id) =>{
-        return await OrderProductModel.findByPk(id);
+    getById: async (id_product, id_order) =>{
+        return await OrderProductModel.findByPk(id_order, id_product);
     }
 };

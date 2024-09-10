@@ -98,7 +98,7 @@ module.exports = {
             if(user.password === password){
                 
                 let tokenByCpf = await TokenModel.findOne({where: {cpf_user: cpf}}); 
-                TokenDAO.delete(tokenByCpf.id);
+                if(tokenByCpf) await TokenDAO.delete(tokenByCpf.id);
                 
                 const token = jwt.sign({ id: {cpf: user.cpf, email: user.email, fullName: user.fulName, role: user.role}}, process.env.SECRET, {expiresIn: expiresIn});
                 await TokenDAO.save(cpf, token, expiresIn);

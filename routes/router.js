@@ -9,18 +9,18 @@ router.get('/install', require('../controllers/Install').install);
 // ORDERS routes.
     // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     const order = require('../controllers/Order');  
-    router.get('/orders/:page/:limit', authenticateToken, isAdmin, order.getOrdersUser);
+    router.get('/orders/:page/:limit', authenticateToken, order.getOrdersUser);
 
     // POST /orders: Cria um novo pedido.
-    router.post('/orders', authenticateToken, isAdmin, order.postOrder);
+    router.post('/orders', authenticateToken, order.postOrder);
 
     // GET /orders/:id: Retorna um pedido em específico.
     router.get('/orders/:id', authenticateToken, order.getOrderById);
 
-    // PUT /orders/:id: Atualiza um pedido.
+    // PUT /orders/:id: Atualiza um pedido (somente administradores).
     router.put('/orders/:id', authenticateToken, isAdmin, order.putOrderById);
 
-    // DELETE /orders/:id: Deleta um pedido.
+    // DELETE /orders/:id: Deleta um pedido (somente administradores).
     router.delete('/orders/:id', authenticateToken, isAdmin, order.deleteOrderById);
 
 
