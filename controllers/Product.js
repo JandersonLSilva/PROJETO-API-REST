@@ -6,14 +6,16 @@ module.exports = {
     // GET /products: Retorna todos os produtos.
     getProducts: async function(req, res) {
         const {page, limit} = req.params;
-
-        let products = await ProductDAO.list(page, limit);
-
-        if (products.length === 0) res.json(response.fail(
-                'Nenhum Produto encontrado no banco de dados!', 
-                {code: 'PRODUCTS_NOT_FOUND', status: 404})
-        );
-        else res.json(response.sucess(products, 'product', 'Listando Produtos.'));
+        try {
+            let products = await ProductDAO.list(page, limit);
+    
+            if (products.length === 0) throw {msg: 'Nenhum Produto encontrado no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
+            
+            res.json(response.sucess(products, 'Products', 'Listando Produtos.'));
+        } 
+        catch (err) {
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
+        }
     },
 
     // POST /products: Cria um novo produto (somente administradores).
@@ -22,71 +24,72 @@ module.exports = {
         let return_products = [];
 
         try{ 
-            if(Array.isArray(return_products) && products){
+            if(Array.isArray(products) && products){
                 for(let i = 0; i < products.length; i++)
                     return_products.push( await ProductDAO.save(products[i].name, products[i].description, products[i].value, products[i].category, products[i].quantity));
-                res.json(response.sucess(return_products, 'products', 'Produto(s) Inserido(s).'));
+                if(return_products === 0) throw {msg: 'Não foi possível válidar os dados inseridos', obj: {code: 'BAD_REQUEST', status: 403 }};
             } 
             else if(products) {
                 return_products.push( await ProductDAO.save(products.name, products.description, products.value, products.category, products.quantity));
-                res.json(response.sucess(return_products, 'products', 'Produto(s) Inserido(s).'));
             }
-            else res.json(response.fail('Inserção de forma inválida dos dados!'));
+            else throw {msg: 'Não foi possível válidar os dados inseridos', obj: {code: 'BAD_REQUEST', status: 403 }};
+            
+            res.json(response.sucess(return_products, 'Product', 'Produto(s) Inserido(s).'));
         }
         catch(err) { 
-            res.json(response.fail('Inserção de forma inválida dos dados!', err));
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
         }
     },
    
     // PUT /products/:id: Atualiza um produto.
     putProductById: async function(req, res) {
-        const {id} = req.params;
+        const id = req.params.id;
         const {name, description, value, category, quantity} = req.body;
 
-        ProductDAO.update(id, name, description, value, category, quantity).then(ret =>{
+        try {
+            let ret = await ProductDAO.update(id, name, description, value, category, quantity);
+            if(ret === 0) throw {msg: 'Nenhum Produto encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
 
-            if(ret[0] !== 0) ProductDAO.getById(id)
-                .then(product => {res.json(response.sucess(product, 'product', 'Produto Atualizado.'))})
-                .catch(err=>{
-                    res.json(response.fail('Erro Inesperado!', err));
-                }); 
-                
-            else res.json(response.fail(
-                'Nenhum Produto encontrado com esse id no banco de dados!', 
-                {code: 'PRODUCT_NOT_FOUND', status: 404})
-            );
-        }).catch(err =>{
-            res.json(response.fail('Erro Inesperado!', err));
-        });
+            let product = await ProductDAO.getById(id); 
+            res.json(response.sucess(product, 'Product', 'Produto Atualizado.'))
+        } 
+        catch (err) {
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
+        }
     },
 
     // DELETE /products/:id: Deleta um produto.
     deleteProductById: async function(req, res) {
-        const {id} = req.params;
-        let product;
-        ProductDAO.getById(id).then(produtById => {product = produtById}).catch(err=>{ res.json(response.fail('Erro Inesperado!', err)) }); 
-        
-        let ret = await ProductDAO.delete(id);
+        const id = req.params.id;
 
-        if (ret !== 1) res.json(response.fail(
-            'Nenhum Produto encontrado com esse id no banco de dados!', 
-            {code: 'PRODUCT_NOT_FOUND', status: 404})
-        );
-        else res.json(response.sucess(product, 'product', 'Produto Deletado.'));
+        try {
+            let product = await ProductDAO.getById(id);
+            if (!product) throw {msg: 'Nenhum Produto encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
+            
+            await ProductDAO.delete(id);
+            console.log(product)
+            res.json(response.sucess(product, 'product', 'Produto Deletado.'));
+        } 
+        catch (err) {
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
+        }
         
     },
     
     // GET /products/:id: Retorna um produto em específico.
     getProductById: async function(req, res) {
-        const {id} = req.params;
-        let product = await ProductDAO.getById(id);
+        const id = req.params.id;
 
-        if (!product) res.json(response.fail(
-            'Nenhum Produto encontrado com esse id no banco de dados!', 
-            {code: 'PRODUCT_NOT_FOUND', status: 404})
-        );
-        else res.json(response.sucess(product, 'product', 'Produto Retornado.'));
-        
+        try{
+            let product = await ProductDAO.getById(id);
+    
+            if (!product) throw {msg: 'Nenhum Produto encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
+
+            res.json(response.sucess(product, 'product', 'Produto Retornado.'));
+        }
+        catch (err) {
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
+        }
     }
 
 };

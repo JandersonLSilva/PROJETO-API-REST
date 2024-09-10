@@ -4,6 +4,7 @@ const OrderDAO = require('../service/OrderDAO');
 const OrderProductModel = require('../models/OrderProduct');
 const { isAdmin, verifyToken } = require("../middlewares_utils/utils");
 const OrderModel = require('../models/Order');
+const { decode } = require('jsonwebtoken');
 
 // ORDERS Controller.
 module.exports = {
@@ -11,14 +12,14 @@ module.exports = {
         const {page, limit} = req.params;
         let orders;
 
-        const decoded = verifyToken(req);
+        try {
+            const decoded = await verifyToken(req);
 
-        if (await isAdmin(req)) orders = await OrderDAO.list(page, limit);
-        else orders = await OrderDAO.list(page, limit, decoded.id.cpf);
-
-        if (orders.length === 0) res.json(response.fail('Nenhum Pedido encontrado no banco de dados!', {code: 'ORDERS_NOT_FOUND', status: 404}) );
-        
-        else {
+            if (await isAdmin(req)) orders = await OrderDAO.list(page, limit);
+            else orders = await OrderDAO.list(page, limit, decoded.id.cpf);
+            
+            if (orders.length === 0) throw {msg: 'Nenhum Pedido encontrado no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
+            
             for(let i = 0; i < orders.length; i++){
                 let order_products = await OrderProductModel.findAll({where: {id_order: orders[i].id}});
 
@@ -33,6 +34,10 @@ module.exports = {
                 orders[i].dataValues['products_id'] = products_id;
             }
             res.json(response.sucess(orders, 'Order', 'Listando Pedidos.'));
+            
+        } catch (err) {
+            console.log(err)
+            res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
         }
     },
 
@@ -45,7 +50,7 @@ module.exports = {
             if(Array.isArray(orders) && orders){
                 for(let i = 0; i < orders.length; i++){
                     if ((!orders[i].products_id) || (orders[i].products_id.length == 0)) 
-                        throw {msg: "O campo product_id não existe, informe-o para cadastrar um pedido", obj: {code: "BAD_REQUEST", status: "400"}};
+                        throw {msg: "Não foi possível validar o campo products_id, informe-o corretamente!", obj: {code: "BAD_REQUEST", status: "400"}};
                     let products = [];
 
                     return_orders.push( await OrderDAO.save(orders[i].cpf_user, orders[i].status, orders[i].total_value));
@@ -59,7 +64,6 @@ module.exports = {
                 if(return_orders.length === 0) throw {msg: 'Os dados inseridos não são válidos!'};
             } 
             else if(orders && orders.products_id) {
-                console.log(orders.products_id.length)
                 if ((!orders.products_id) || (orders.products_id.length == 0)) 
                     throw {msg: "O campo product_id não existe, informe-o para cadastrar um pedido", obj: {code: "BAD_REQUEST", status: "400"}};
                 return_orders.push( await OrderDAO.save(orders.cpf_user, orders.status, orders.total_value));
@@ -68,7 +72,6 @@ module.exports = {
             res.json(response.sucess(return_orders, 'orders', 'Pedido(s) Inserido(s).'));
         }
         catch(err) { 
-            console.log(err)
             res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
         }
     },
@@ -83,7 +86,7 @@ module.exports = {
             await OrderDAO.update(id, status, total_value);
 
             let order = await OrderModel.findOne({where: {id: id}});
-            if(!order) throw {msg: "Nenhum Pedido foi encontrado com esse id na base de dados!", obj: {code: "NOT_FOUND", status: "404"}};
+            if(!order) throw {msg: "Nenhum Pedido foi encontrado com esse id na base de dados!", obj: {code: "NO_FOUND", status: "404"}};
 
             await OrderProductDAO.delete(id);
 
@@ -105,7 +108,7 @@ module.exports = {
     deleteOrderById: async function(req, res) {
         const {id} = req.params;
         let products_id = [];
-        
+
         try{
             let order = await OrderDAO.getById(id); 
             
@@ -117,8 +120,8 @@ module.exports = {
             });
             order.dataValues['products_id'] = products_id;
 
-            if (!ret) throw {msg: 'Nenhum Pedido encontrado com esse id no banco de dados!', obj: {code: 'ORDER_NOT_FOUND', status: 404}}
-            else res.json(response.sucess({ order: order }, 'Order', 'Pedido Deletado.'));
+            if (!ret) throw {msg: 'Nenhum Pedido encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}}
+            res.json(response.sucess({ order: order }, 'Order', 'Pedido Deletado.'));
         }
         catch(err){
             res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
@@ -133,7 +136,7 @@ module.exports = {
 
         try{
             order = await OrderDAO.getById(id);
-            if(!order) throw  {msg: 'Nenhum Pedido encontrado com esse id no banco de dados!', obj: {code: 'ORDER_NOT_FOUND', status: 404}};
+            if(!order) throw  {msg: 'Nenhum Pedido encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
 
             let order_products = await OrderProductModel.findAll({where: {id_order: id}});
             order_products.forEach(order_product => {
