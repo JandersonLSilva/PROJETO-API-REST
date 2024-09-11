@@ -5,6 +5,10 @@ const {isAdmin, authenticateToken} = require('../middlewares_utils/middlewares')
 // GET /install: .
 router.get('/install', require('../controllers/Install').install);
 
+// Filter routes.
+const {indexFilter} = require('../controllers/filter');
+router.get('/products/filter', indexFilter);
+
 
 // ORDERS routes.
     // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
@@ -70,5 +74,6 @@ router.get('/install', require('../controllers/Install').install);
     // QUALQUER CLIENTE:
         // POST /user: Retorna os dados do usuário logado/token.
         router.get('/user', authenticateToken, user.getUser);
+
 
 module.exports = router;
