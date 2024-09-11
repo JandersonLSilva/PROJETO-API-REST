@@ -4,6 +4,16 @@ const ProductModel = require('../models/Product');
 
 module.exports.indexFilter = async (req, res) => 
     {
+        // #swagger.summary = 'Filtra Produtos.'
+        // #swagger.tags = ['Products']
+        // #swagger.description = 'Essa rota filtra os produtos e os retorna, como um objeto JSON.'
+        /* #swagger.responses[200] = {
+            description: 'Listando Produtos.',
+            schema: { $ref: "#/schemas/array_product" }
+        }*/
+        /* #swagger.responses[404] = {
+            "description": "Nenhum Produto encontrado!"
+        }*/
         try{
             let products = [];
 

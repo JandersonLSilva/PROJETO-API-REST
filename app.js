@@ -10,8 +10,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 require("dotenv").config();
 
-// app.use('/', );
-// app.use('/users', );
 
 // Middleware de error 
 app.use(function(err, req, res, next) {

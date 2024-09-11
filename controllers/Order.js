@@ -8,7 +8,20 @@ const { decode } = require('jsonwebtoken');
 
 // ORDERS Controller.
 module.exports = {
+    // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     getOrdersUser: async function(req, res) {
+        // #swagger.summary = 'Lista todas os Pedidos.'
+        // #swagger.tags = ['Orders']
+        // #swagger.description = 'Essa rota lista todos os Pedidos se for admin ou todos pedidos relacionados se for um user, e recebe um parâmetro página e limite para definir quais vão ser listados, como um objeto JSON.'
+
+       /* #swagger.responses[200] = {
+            description: 'Pedido(s) Retornado(s).',
+            schema: { $ref: "#/schemas/array_order" }
+        }*/
+        /* #swagger.responses[404] = {
+            "description": "Nenhum Pedido encontrado no banco de dados!"
+        }*/
+
         const {page, limit} = req.params;
         let orders;
 
@@ -43,6 +56,22 @@ module.exports = {
 
     // POST /orders: Cria um novo pedido.
     postOrder: async function(req, res) {
+        // #swagger.summary = 'Cadastrar os Pedidos.'
+        // #swagger.tags = ['Orders']
+        // #swagger.description = 'Essa rota cadastra um novo Pedido e o retorna, como um objeto JSON.'
+        /* #swagger.parameters = {
+            name: "body",
+            in: "body",
+            schema: { $ref: "#/schemas/ins_order" }
+        }*/
+        /* #swagger.responses[200] = {
+            description: 'Pedido(s) Inserido(s).',
+            schema: { $ref: "#/schemas/order" }
+        }*/
+        /* #swagger.responses[403] = {
+            "description": "Não foi possível válidar os dados inseridos"
+        }*/
+
         const orders = req.body;
         let return_orders = [];
 
@@ -50,7 +79,7 @@ module.exports = {
             if(Array.isArray(orders) && orders){
                 for(let i = 0; i < orders.length; i++){
                     if ((!orders[i].products_id) || (orders[i].products_id.length == 0)) 
-                        throw {msg: "Não foi possível validar o campo products_id, informe-o corretamente!", obj: {code: "BAD_REQUEST", status: "400"}};
+                        throw {msg: "Não foi possível validar o campo products_id, informe-o corretamente!", obj: {code: "BAD_REQUEST", status: "403"}};
                     let products = [];
 
                     return_orders.push( await OrderDAO.save(orders[i].cpf_user, orders[i].status, orders[i].total_value));
@@ -65,7 +94,7 @@ module.exports = {
             } 
             else if(orders && orders.products_id) {
                 if ((!orders.products_id) || (orders.products_id.length == 0)) 
-                    throw {msg: "O campo product_id não existe, informe-o para cadastrar um pedido", obj: {code: "BAD_REQUEST", status: "400"}};
+                    throw {msg: "O campo product_id não existe, informe-o para cadastrar um pedido", obj: {code: "BAD_REQUEST", status: "403"}};
                 return_orders.push( await OrderDAO.save(orders.cpf_user, orders.status, orders.total_value));
             }
             else throw {msg: 'Os dados inseridos não são válidos!'};
@@ -78,6 +107,22 @@ module.exports = {
     
     // PUT /orders/:id: Atualiza um pedido.
     putOrderById: async function(req, res) {
+        // #swagger.summary = 'Atualizar um Pedido.'
+        // #swagger.tags = ['Orders']
+        // #swagger.description = 'Essa rota atualiza um Pedido com base no id informado e o retorna, como um objeto JSON (somente administradores).'
+        /* #swagger.parameters = {
+            name: "body",
+            in: "body",
+            schema: { $ref: "#/schemas/up_order" }
+        }*/
+        /* #swagger.responses[200] = {
+            description: 'Pedido Atualizado.',
+            schema: { $ref: "#/schemas/order" }
+        }*/
+        /* #swagger.responses[404] = {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+        }*/
+
         const id  = req.params.id;
         const { status, total_value, products_id } = req.body;
         let products = [];
@@ -106,6 +151,18 @@ module.exports = {
     
     // DELETE /orders/:id: Deleta um pedido.
     deleteOrderById: async function(req, res) {
+        // #swagger.summary = 'Deletar um Pedidos.'
+        // #swagger.tags = ['Orders']
+        // #swagger.description = 'Essa rota apaga um Pedido com base no id informado (somente administradores) e o retorna, como um objeto JSON.'
+
+        /* #swagger.responses[200] = {
+            description: 'Pedido Deletado.',
+            schema: { $ref: "#/schemas/order" }
+        }*/
+        /* #swagger.responses[404] = {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+        }*/
+
         const {id} = req.params;
         let products_id = [];
 
@@ -130,6 +187,18 @@ module.exports = {
     
     // GET /orders/:id: Retorna um pedido em específico.
     getOrderById: async function(req, res) {
+        // #swagger.summary = 'Listar um Pedidos.'
+        // #swagger.tags = ['Orders']
+        // #swagger.description = 'Essa retorna um Pedido (como um objeto JSON) em específico com base no id informado no parametro da rota.'
+
+        /* #swagger.responses[200] = {
+            description: 'Pedido Retornado.',
+            schema: { $ref: "#/schemas/order" }
+        }*/
+        /* #swagger.responses[404] = {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+        }*/
+
         const id = req.params.id;
         let products_id = [];
         let order;

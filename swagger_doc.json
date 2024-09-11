@@ -1,0 +1,816 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API REST Virtual Store",
+    "description": "API REST para gerenciamento de uma Loja Virtual."
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/install": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/products/filter": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Filtra Produtos.",
+        "description": "Essa rota filtra os produtos e os retorna, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listando Produtos.",
+            "schema": {
+              "$ref": "#/schemas/array_product"
+            }
+          },
+          "404": {
+            "description": "Nenhum Produto encontrado!"
+          }
+        }
+      }
+    },
+    "/orders/{page}/{limit}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Lista todas os Pedidos.",
+        "description": "Essa rota lista todos os Pedidos se for admin ou todos pedidos relacionados se for um user, e recebe um parâmetro página e limite para definir quais vão ser listados, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido(s) Retornado(s).",
+            "schema": {
+              "$ref": "#/schemas/array_order"
+            }
+          },
+          "404": {
+            "description": "Nenhum Pedido encontrado no banco de dados!"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Cadastrar os Pedidos.",
+        "description": "Essa rota cadastra um novo Pedido e o retorna, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/ins_order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido(s) Inserido(s).",
+            "schema": {
+              "$ref": "#/schemas/order"
+            }
+          },
+          "403": {
+            "description": "Não foi possível válidar os dados inseridos"
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Listar um Pedidos.",
+        "description": "Essa retorna um Pedido (como um objeto JSON) em específico com base no id informado no parametro da rota.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido Retornado.",
+            "schema": {
+              "$ref": "#/schemas/order"
+            }
+          },
+          "404": {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Atualizar um Pedido.",
+        "description": "Essa rota atualiza um Pedido com base no id informado e o retorna, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/up_order"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido Atualizado.",
+            "schema": {
+              "$ref": "#/schemas/order"
+            }
+          },
+          "404": {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Deletar um Pedidos.",
+        "description": "Essa rota apaga um Pedido com base no id informado (somente administradores) e o retorna, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido Deletado.",
+            "schema": {
+              "$ref": "#/schemas/order"
+            }
+          },
+          "404": {
+            "description": "Nenhum Pedido encontrado com esse id no banco de dados!"
+          }
+        }
+      }
+    },
+    "/products/{page}/{limit}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Lista todas os Produtos.",
+        "description": "Essa rota retorna todos os produtos de uma página e limite informado, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto(s) Retornado(s).",
+            "schema": {
+              "$ref": "#/schemas/array_product"
+            }
+          },
+          "404": {
+            "description": "Nenhum Produto encontrado no banco de dados!"
+          }
+        }
+      }
+    },
+    "/products": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Cadastrar os Produtos.",
+        "description": "Essa rota cadastra um novo produto e o retorna, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/save_product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto(s) Inserido(s).",
+            "schema": {
+              "$ref": "#/schemas/array_product"
+            }
+          },
+          "403": {
+            "description": "Não foi possível válidar os dados inseridos"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Listar um Produto.",
+        "description": "Essa rota retorna um produto (como um objeto JSON) em específico com base no id informado no parametro da rota.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto Retornado.",
+            "schema": {
+              "$ref": "#/schemas/product"
+            }
+          },
+          "404": {
+            "description": "Nenhum Produto encontrado com esse id no banco de dados!"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Atualizar um Produto.",
+        "description": "Essa rota atualiza um produto com base no id informado e o retorna, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/save_product"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto Atualizado.",
+            "schema": {
+              "$ref": "#/schemas/product"
+            }
+          },
+          "404": {
+            "description": "Nenhum Produto encontrado com esse id no banco de dados!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Deletar um Produto.",
+        "description": "Essa rota apaga um produto com base no id informado e o retorna, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto Deletado.",
+            "schema": {
+              "$ref": "#/schemas/product"
+            }
+          },
+          "404": {
+            "description": "Nenhum Produto encontrado com esse id no banco de dados!"
+          }
+        }
+      }
+    },
+    "/users/{page}/{limit}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Lista todas os Usuários.",
+        "description": "Essa rota retorna todos os Usuários de uma página e limite informado, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário(s) Retornado(s).",
+            "schema": {
+              "$ref": "#/schemas/array_user"
+            }
+          },
+          "404": {
+            "description": "Nenhum Usuário encontrado no banco de dados!"
+          }
+        }
+      }
+    },
+    "/users/{cpf}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Listar um Usuário.",
+        "description": "Essa rota retorna um Usuário (como um objeto JSON) em específico com base no cpf informado no parametro da rota (Somente administradores).",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário Retornado.",
+            "schema": {
+              "$ref": "#/schemas/user"
+            }
+          },
+          "404": {
+            "description": "Nenhum Usuário encontrado com esse cpf no banco de dados!"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Atualizar um Usuário.",
+        "description": "Essa rota atualiza um Usuário com base no cpf informado e o retorna, como um objeto JSON (somente administradores) ou o próprio usuário se o cpf informado for igual ao seu.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/up_user"
+            }
+          },
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário Atualizado.",
+            "schema": {
+              "$ref": "#/schemas/user"
+            }
+          },
+          "404": {
+            "description": "Nenhum Usuário encontrado com esse cpf no banco de dados!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Deletar um Usuário.",
+        "description": "Essa rota apaga um Usuário com base no cpf informado e o retorna, como um objeto JSON (somente administradores).",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário Deletado.",
+            "schema": {
+              "$ref": "#/schemas/user"
+            }
+          },
+          "404": {
+            "description": "Nenhum Usuário encontrado com esse cpf no banco de dados!"
+          }
+        }
+      }
+    },
+    "/admin/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Cadastrar os Administradores.",
+        "description": "Essa rota cadastra um novo Administrador e o retorna, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/ins_admin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário(s) Inserido(s).",
+            "schema": {
+              "$ref": "#/schemas/ins_admin"
+            }
+          },
+          "403": {
+            "description": "Não foi possível válidar os dados inseridos"
+          }
+        }
+      }
+    },
+    "/users/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Cadastrar os Usuários.",
+        "description": "Essa rota cadastra um novo Usuário e o retorna, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/ins_user"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário(s) Inserido(s).",
+            "schema": {
+              "$ref": "#/schemas/ins_user"
+            }
+          },
+          "403": {
+            "description": "Não foi possível válidar os dados inseridos"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Logar com um Usuário.",
+        "description": "Essa rota permite fazer o login de um Usuário e retorna o token gerado, como um objeto JSON.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/schemas/login_user"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login Concluido.",
+            "schema": {
+              "$ref": "#/schemas/token_user"
+            }
+          },
+          "401": {
+            "description": "Senha Informada Inválida! Verifique a senha e tente novamente!"
+          },
+          "404": {
+            "description": "Nenhum Usuário encontrado com esse cpf no banco de dados!"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Listar o Usuário.",
+        "description": "Essa rota retorna o Usuário com base no token enviado, como um objeto JSON.",
+        "responses": {
+          "200": {
+            "description": "Usuário Retornado.",
+            "schema": {
+              "$ref": "#/schemas/user"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemas": {
+    "array_order": {
+      "type": "object",
+      "example": [
+        {
+          "id": 1,
+          "cpf_user": "11122233309",
+          "status": "Em Processamento",
+          "total_value": 5999.99,
+          "products_id": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "id": 2,
+          "cpf_user": "98765432109",
+          "status": "Confirmado",
+          "total_value": 1299.99,
+          "products_id": [
+            4,
+            6,
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "cpf_user": "12345678909",
+          "status": "Em Transito",
+          "total_value": 79.99,
+          "products_id": [
+            5,
+            3,
+            2
+          ]
+        }
+      ]
+    },
+    "order": {
+      "type": "object",
+      "example": {
+        "id": 1,
+        "cpf_user": "11122233309",
+        "status": "Em Processamento",
+        "total_value": 3999.99,
+        "products_id": [
+          1,
+          2,
+          4
+        ]
+      }
+    },
+    "ins_order": {
+      "type": "object",
+      "example": {
+        "cpf_user": "11122233309",
+        "status": "Em Processamento",
+        "total_value": 5999.99,
+        "products_id": [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          },
+          {
+            "id": 4
+          }
+        ]
+      }
+    },
+    "up_order": {
+      "type": "object",
+      "example": {
+        "status": "Em Processamento",
+        "total_value": 2999.99,
+        "products_id": [
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          },
+          {
+            "id": 4
+          }
+        ]
+      }
+    },
+    "array_product": {
+      "type": "object",
+      "example": [
+        {
+          "id": 1,
+          "name": "Apple IPhone",
+          "description": "The latest IPhone model with advanced camera features.",
+          "value": 5999.99,
+          "category": "Electronics",
+          "quantity": 10
+        },
+        {
+          "id": 2,
+          "name": "Samsung S24 Ultra",
+          "description": "The latest Samsung model with advanced camera features and high performace.",
+          "value": 4999.99,
+          "category": "Electronics",
+          "quantity": 21
+        }
+      ]
+    },
+    "product": {
+      "type": "object",
+      "example": {
+        "id": 1,
+        "name": "Apple IPhone",
+        "description": "The latest IPhone model with advanced camera features.",
+        "value": 5999.99,
+        "category": "Electronics",
+        "quantity": 10
+      }
+    },
+    "save_product": {
+      "type": "object",
+      "example": {
+        "name": "Apple IPhone",
+        "description": "The latest IPhone model with advanced camera features.",
+        "value": 5999.99,
+        "category": "Electronics",
+        "quantity": 10
+      }
+    },
+    "array_user": {
+      "type": "object",
+      "example": [
+        {
+          "cpf": "12345678909",
+          "password": "password123",
+          "fullName": "John Doe",
+          "email": "johndoe@example.com",
+          "contact_number": "12345678909",
+          "address": "123 Main St",
+          "role": "client"
+        },
+        {
+          "cpf": "98765432109",
+          "password": "password456",
+          "fullName": "Jane Doe",
+          "email": "janedoe@example.com",
+          "contact_number": "98765432109",
+          "address": "456 Elm St",
+          "role": "client"
+        },
+        {
+          "cpf": "11122233309",
+          "password": "password789",
+          "fullName": "Bob Smith",
+          "email": "bobsmith@example.com",
+          "contact_number": "11122233339",
+          "address": "789 Oak St",
+          "role": "admin"
+        }
+      ]
+    },
+    "user": {
+      "type": "object",
+      "example": {
+        "cpf": "98765432109",
+        "password": "password456",
+        "fullName": "Jane Doe",
+        "email": "janedoe@example.com",
+        "contact_number": "98765432109",
+        "address": "456 Elm St"
+      }
+    },
+    "ins_user": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789",
+        "fullName": "Bob Smith",
+        "email": "bobsmith@example.com",
+        "contact_number": "11122233339",
+        "address": "789 Oak St"
+      }
+    },
+    "ins_admin": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789",
+        "fullName": "Bob Smith",
+        "email": "bobsmith@example.com",
+        "contact_number": "11122233339",
+        "address": "789 Oak St",
+        "role": "admin"
+      }
+    },
+    "up_user": {
+      "type": "object",
+      "example": {
+        "password": "password456",
+        "fullName": "Jane Doe",
+        "email": "janedoe@example.com",
+        "contact_number": "98765432109",
+        "address": "456 Elm St"
+      }
+    },
+    "login_user": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789"
+      }
+    },
+    "token_user": {
+      "type": "object",
+      "example": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6eyJjcGYiOiIxMjM0NTY3ODkwOSIsImVtYWlsIjoiam9obmRvZUBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQifSwiaWF0IjoxNzI1OTkyNTgxLCJleHAiOjE3MjU5OTYxODF9.Wc_bHDsGnm7pJS6XOqhWXkgQZ_7c92wB3EABPxYJblU"
+      }
+    }
+  }
+}

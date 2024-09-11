@@ -4,7 +4,8 @@
   "description": "Projeto no formato API REST que visa servir as principais funcionalidades de uma loja virtual, como o gerenciamento de clientes, produtos e pedidos",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "swagger-autogen": "node swagger.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.0",
     "nodemon": "^2.0.15",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
   }
 }

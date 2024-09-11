@@ -9,6 +9,16 @@ const response = require('../helpers/response');
 // INSTALL Controller.
 module.exports = {
     install: async function(req, res) {
+        // #swagger.summary = 'Instalar o Banco de Dados.'
+        // #swagger.tags = ['Install']
+        // #swagger.description = 'Essa rota instala o banco de dados.'
+        /* #swagger.responses[200] = {
+            description: 'Banco de Dados Instalado com Sucesso!',
+            schema: {
+                "msg": "Banco de Dados Instalado com Sucesso!"
+            }
+        }*/
+
         await sequelize.sync({force: true});
 
         

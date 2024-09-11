@@ -1,0 +1,199 @@
+{
+    "array_order": {
+      "type": "object",
+      "example": [
+        {
+          "id": 1,
+          "cpf_user": "11122233309",
+          "status": "Em Processamento",
+          "total_value": 5999.99,
+          "products_id": [1, 2, 3, 4]
+        },
+        {
+          "id": 2,
+          "cpf_user": "98765432109",
+          "status": "Confirmado",
+          "total_value": 1299.99,
+          "products_id": [4, 6, 1]
+        },
+        {
+          "id": 3,
+          "cpf_user": "12345678909",
+          "status": "Em Transito",
+          "total_value": 79.99,
+          "products_id": [5, 3, 2]
+        }
+      ]
+    },
+    "order": {
+      "type": "object",
+      "example": {
+        "id": 1,
+        "cpf_user": "11122233309",
+        "status": "Em Processamento",
+        "total_value": 3999.99,
+        "products_id": [1, 2, 4]
+      }
+    },
+    "ins_order": {
+      "type": "object",
+      "example": {
+        "cpf_user": "11122233309",
+        "status": "Em Processamento",
+        "total_value": 5999.99,
+        "products_id": [
+          { "id": 1 },
+          { "id": 2 },
+          { "id": 3 },
+          { "id": 4 }
+        ]
+      }
+    },
+    "up_order": {
+      "type": "object",
+      "example": {
+        "status": "Em Processamento",
+        "total_value": 2999.99,
+        "products_id": [
+          { "id": 2 },
+          { "id": 3 },
+          { "id": 4 }
+        ]
+      }
+    },
+
+
+    "array_product": {
+      "type": "object",
+      "example": [
+        {
+          "id": 1,
+          "name": "Apple IPhone",
+          "description": "The latest IPhone model with advanced camera features.",
+          "value": 5999.99,
+          "category": "Electronics",
+          "quantity": 10
+        },
+        {
+          "id": 2,
+          "name": "Samsung S24 Ultra",
+          "description": "The latest Samsung model with advanced camera features and high performace.",
+          "value": 4999.99,
+          "category": "Electronics",
+          "quantity": 21
+        }
+      ]
+    },
+    "product": {
+      "type": "object",
+      "example": {
+        "id": 1,
+        "name": "Apple IPhone",
+        "description": "The latest IPhone model with advanced camera features.",
+        "value": 5999.99,
+        "category": "Electronics",
+        "quantity": 10
+      }
+    },
+    "save_product": {
+      "type": "object",
+      "example": {
+        "name": "Apple IPhone",
+        "description": "The latest IPhone model with advanced camera features.",
+        "value": 5999.99,
+        "category": "Electronics",
+        "quantity": 10
+      }
+    },
+    "array_user": {
+      "type": "object",
+      "example": [
+        {
+          "cpf": "12345678909",
+          "password": "password123",
+          "fullName": "John Doe",
+          "email": "johndoe@example.com",
+          "contact_number": "12345678909",
+          "address": "123 Main St",
+          "role": "client"
+        },
+        {
+          "cpf": "98765432109",
+          "password": "password456",
+          "fullName": "Jane Doe",
+          "email": "janedoe@example.com",
+          "contact_number": "98765432109",
+          "address": "456 Elm St",
+          "role": "client"
+        },
+        {
+          "cpf": "11122233309",
+          "password": "password789",
+          "fullName": "Bob Smith",
+          "email": "bobsmith@example.com",
+          "contact_number": "11122233339",
+          "address": "789 Oak St",
+          "role": "admin"
+      
+        }
+      ]
+    },
+    "user": {
+      "type": "object",
+      "example": {
+        "cpf": "98765432109",
+        "password": "password456",
+        "fullName": "Jane Doe",
+        "email": "janedoe@example.com",
+        "contact_number": "98765432109",
+        "address": "456 Elm St"
+      }
+    },
+    "ins_user": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789",
+        "fullName": "Bob Smith",
+        "email": "bobsmith@example.com",
+        "contact_number": "11122233339",
+        "address": "789 Oak St"
+      }
+    },
+    "ins_admin": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789",
+        "fullName": "Bob Smith",
+        "email": "bobsmith@example.com",
+        "contact_number": "11122233339",
+        "address": "789 Oak St",
+        "role": "admin"
+      }
+    },
+    "up_user": {
+      "type": "object",
+      "example": {
+        "password": "password456",
+        "fullName": "Jane Doe",
+        "email": "janedoe@example.com",
+        "contact_number": "98765432109",
+        "address": "456 Elm St"
+      }
+    },
+    "login_user": {
+      "type": "object",
+      "example": {
+        "cpf": "11122233309",
+        "password": "password789"
+      }
+    },
+    "token_user": {
+      "type": "object",
+      "example": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6eyJjcGYiOiIxMjM0NTY3ODkwOSIsImVtYWlsIjoiam9obmRvZUBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQifSwiaWF0IjoxNzI1OTkyNTgxLCJleHAiOjE3MjU5OTYxODF9.Wc_bHDsGnm7pJS6XOqhWXkgQZ_7c92wB3EABPxYJblU"
+      }
+    }
+}
+    

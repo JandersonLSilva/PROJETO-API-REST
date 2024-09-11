@@ -14,7 +14,7 @@ router.get('/products/filter', indexFilter);
     // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     const order = require('../controllers/Order');  
     router.get('/orders/:page/:limit', authenticateToken, order.getOrdersUser);
-
+    
     // POST /orders: Cria um novo pedido.
     router.post('/orders', authenticateToken, order.postOrder);
 
@@ -62,8 +62,8 @@ router.get('/products/filter', indexFilter);
         router.delete('/users/:cpf', authenticateToken, isAdmin, user.deleteUserByCpf);
 
         // POST /signup: Cadastra um novo administrador.
-        router.post('/admin/signup', authenticateToken, isAdmin, user.signup);
-
+        router.post('/admin/signup', authenticateToken, isAdmin, user.adminSignup);
+    
     // QUALQUER USUÁRIO:
         // POST /signup: Cadastra um novo usuário.
         router.post('/users/signup', user.signup);
