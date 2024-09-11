@@ -1,8 +1,6 @@
 const express = require('express');
 const response = require('../helpers/response');
-const OrderModel = require('../models/Order');
 const ProductModel = require('../models/Product');
-const UserModel = require('../models/User');
 
 module.exports.indexFilter = async (req, res) => 
     {
@@ -10,8 +8,8 @@ module.exports.indexFilter = async (req, res) =>
             let products = [];
 
             products = (req.query.name) ? await this.searchByProperty(res, 'name', req.query.name) : []
-            
-            if(products.lenght === 0) products = (req.query.category) ? await this.searchByProperty(res, 'category', req.query.category) : []
+
+            if(products.length === 0) products = (req.query.category) ? await this.searchByProperty(res, 'category', req.query.category) : []
             else {
                 let categorys = (req.query.category) ? await this.searchByProperty(res, 'category', req.query.category) : null; 
                 if(categorys){
@@ -21,9 +19,9 @@ module.exports.indexFilter = async (req, res) =>
                 }
             }
             
-            if(products.lenght === 0) products = (req.query.description) ? await this.searchByProperty(res, 'description', req.query.description) : []
+            if(products.length === 0) products = (req.query.description) ? await this.searchByProperty(res, 'description', req.query.description) : []
             else {
-                let descriptions = (req.query.description) ? await this.searchByProperty(res, 'category', req.query.description) : null; 
+                let descriptions = (req.query.description) ? await this.searchByProperty(res, 'description', req.query.description) : null; 
                 if(descriptions){
                     products = products.filter(product => {
                         return descriptions.some(description => product.id === description.id);
@@ -31,7 +29,7 @@ module.exports.indexFilter = async (req, res) =>
                 }
             }
 
-            if(products.lenght === 0) throw {msg: "Nenhum Produto encontrado!", obj: {code: "NO_FOUND", status: 404}};
+            if(products.length === 0) throw {msg: "Nenhum Produto encontrado!", obj: {code: "NO_FOUND", status: 404}};
 
 
             res.json(response.sucess({products}, 'Products', 'Listando Produtos.'));
