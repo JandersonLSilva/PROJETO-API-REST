@@ -1,56 +1,46 @@
-const { DataType, Op, Sequelize } = require('sequelize');
+const { DataTypes, Op, Sequelize } = require('sequelize');
 const sequelize = require('../helpers/db');
+const UserModel = require('./User');
 
 const OrderModel = sequelize.define('Order', {
     id: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         allowNull: false,
         autoIncrement: true,
     },
 
-    cpf_client: {
-        type: DataTypes.INTEGER,
+    cpf_user: {
+        type: DataTypes.STRING(11),
         reference: {
-            model: 'client',
-            key: id,
+            model: 'User',
+            key: 'cpf',
             deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
     },
 
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(16),
         allowNull: false,
         validate: {
-            isEmpty: {msg: "O Status não pode ser vazio."},
+            notEmpty: {msg: "O Status não pode ser vazio."},
 
-            in: {
-                args: ['Em Processamento','Confirmado','Em Transito','Entregue','Cancelado'],
+            isIn: {
+                args: [['Em Processamento','Confirmado','Em Transito','Entregue','Cancelado']],
                 msg: `Só é aceito Status como: 'Em Processamento', 'Confirmado', 'Em Transito', 'Entregue' ou 'Cancelado'`
             }
         }
     },
 
     total_value: {
-        type: {args: DataTypes.DOUBLE, msg: 'Dados inválidos. O Valor Total deve ser numérico.'}
-    },
-
-    date_created: {
-        type: {args: DataTypes.DATA, msg: 'Dados inválidos. Informe um formato de Data válida.'}
-    },
-
-    time_created: {
-        type: {args: DataTypes.TIME, msg: 'Dados inválidos. Informe um formato de Horário válido.'}
-    },
-
-    date_updated: {
-        type: {args: DataTypes.DATA, msg: 'Dados inválidos. Informe um formato de Data válida.'}
-    },
-
-    time_updated: {
-        type: {args: DataTypes.TIME, msg: 'Dados inválidos. Informe um formato de Horário válido.'}
+        type: DataTypes.DOUBLE
     }
 });
 
-OrderModel.belongsTo('Client');
+UserModel.hasMany(OrderModel, { foreignKey: 'cpf_user'});
+OrderModel.belongsTo(UserModel, {
+    foreignKey: 'cpf_user',
+    as: 'Client'
+});
 
 module.exports = OrderModel;
