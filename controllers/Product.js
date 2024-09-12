@@ -16,13 +16,13 @@ module.exports = {
         /* #swagger.responses[404] = {
             "description": "Nenhum Produto encontrado no banco de dados!"
         }*/
-        const {page, limit} = req.params;
+
         try {
-            let products = await ProductDAO.list(page, limit);
+            let products = await ProductDAO.list(req.query.page, req.query.limit);
     
             if (products.length === 0) throw {msg: 'Nenhum Produto encontrado no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
             
-            res.json(response.sucess(products, 'Products', 'Listando Produtos.'));
+            res.json(response.sucess(products, 'Products', 'Listando Produtos.', req.query.page, req.query.limit*req.query.page, products.length));
         } 
         catch (err) {
             res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
@@ -123,7 +123,6 @@ module.exports = {
             if (!product) throw {msg: 'Nenhum Produto encontrado com esse id no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
             
             await ProductDAO.delete(id);
-            console.log(product)
             res.json(response.sucess(product, 'product', 'Produto Deletado.'));
         } 
         catch (err) {

@@ -3,8 +3,9 @@ const UserModel = require('../models/User');
 
 module.exports = {
     list: async (page, limit) =>{
-        let offset = (page - 1) * limit;
-        return await UserModel.findAll({ offset: offset, limit: Number(limit) });
+        let offset = (page && limit) ? ((page - 1) * limit) : null;
+        if(offset !== null) return await UserModel.findAll({ offset: offset, limit: Number(limit) });
+        else return await UserModel.findAll({ offset: 0, limit: 20 });
     },
     save: async (cpf, password, fullName, email, contact_number, address, role) =>{
         return await UserModel.create({

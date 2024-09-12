@@ -21,12 +21,12 @@ module.exports = {
             "description": "Nenhum Usuário encontrado no banco de dados!"
         }*/
 
-        const {page, limit} = req.params;
         try{
-            let users = await UserDAO.list(page, limit);
-
+            let users = await UserDAO.list(req.query.page, req.query.limit);
+            
             if (users.length === 0) throw {msg: 'Nenhum Usuário encontrado no banco de dados!', obj: {code: 'NO_FOUND', status: 404}}
-            res.json(response.sucess(users, 'user', 'Listando Usuários.', page, limit, users.length));
+            res.json(response.sucess(users, 'user', 'Listando Usuários.', req.query.page, req.query.limit*req.query.page, users.length));
+            console.log(users)
         }
         catch(err){
             res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));

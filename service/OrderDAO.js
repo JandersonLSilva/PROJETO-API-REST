@@ -3,9 +3,16 @@ const OrderModel = require('../models/Order');
 
 module.exports = {
     list: async (page, limit, cpf) =>{
-        const offset = (page - 1) * limit;
-        return (cpf) ? await OrderModel.findAll({ offset: offset, limit: Number(limit), where: {cpf_user: cpf} }) 
-                     : await OrderModel.findAll({ offset: offset, limit: Number(limit) });
+        let offset = (page && limit) ? ((page - 1) * limit) : null;
+        if(cpf) {
+            if(offset !== null) return await OrderModel.findAll({ offset: offset, limit: Number(limit), where: {cpf_user: cpf} })
+            else return await OrderModel.findAll({ offset: 0, limit: 20, where: {cpf_user: cpf} });
+        }
+        else{
+            if(offset !== null) return await OrderModel.findAll({ offset: offset, limit: Number(limit) });
+            else return await OrderModel.findAll({ offset: 0, limit: 20 });
+        }
+        
         
     },
     save: async (cpf_user, status, total_value) =>{

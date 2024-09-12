@@ -22,14 +22,13 @@ module.exports = {
             "description": "Nenhum Pedido encontrado no banco de dados!"
         }*/
 
-        const {page, limit} = req.params;
         let orders;
 
         try {
             const decoded = await verifyToken(req);
 
-            if (await isAdmin(req)) orders = await OrderDAO.list(page, limit);
-            else orders = await OrderDAO.list(page, limit, decoded.id.cpf);
+            if (await isAdmin(req)) orders = await OrderDAO.list(req.query.page, req.query.limit);
+            else orders = await OrderDAO.list(req.query.page, req.query.limit, decoded.id.cpf);
             
             if (orders.length === 0) throw {msg: 'Nenhum Pedido encontrado no banco de dados!', obj: {code: 'NO_FOUND', status: 404}};
             
@@ -46,10 +45,9 @@ module.exports = {
                 });
                 orders[i].dataValues['products_id'] = products_id;
             }
-            res.json(response.sucess(orders, 'Order', 'Listando Pedidos.'));
+            res.json(response.sucess(orders, 'Order', 'Listando Pedidos.', req.query.page, req.query.limit*req.query.page, orders.length));
             
         } catch (err) {
-            console.log(err)
             res.json(response.fail(err.msg || "Erro Inesperado!", err.obj || err));
         }
     },

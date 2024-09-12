@@ -6,14 +6,16 @@ const {isAdmin, authenticateToken} = require('../middlewares_utils/middlewares')
 router.get('/install', require('../controllers/Install').install);
 
 // Filter routes.
-const {indexFilter} = require('../controllers/filter');
+const {indexFilter, statusFilter } = require('../controllers/filter');
 router.get('/products/filter', indexFilter);
+
+router.get('/orders/filter/:status', statusFilter);
 
 
 // ORDERS routes.
     // GET /orders/:page/:limit Retorna todos os pedidos se for admin ou todos pedidos relacionados se for um user.
     const order = require('../controllers/Order');  
-    router.get('/orders/:page/:limit', authenticateToken, order.getOrdersUser);
+    router.get('/orders', authenticateToken, order.getOrdersUser);
     
     // POST /orders: Cria um novo pedido.
     router.post('/orders', authenticateToken, order.postOrder);
@@ -31,7 +33,7 @@ router.get('/products/filter', indexFilter);
 // PRODUCTS routes.
     // GET /products/:page/:limit Retorna todos os produtos.
     const products = require('../controllers/Product');
-    router.get('/products/:page/:limit', products.getProducts);
+    router.get('/products', products.getProducts);
 
     // POST /products: Cria um novo produto (somente administradores).
     router.post('/products', authenticateToken, isAdmin, products.postProduct);
@@ -50,7 +52,7 @@ router.get('/products/filter', indexFilter);
     const user = require('../controllers/User');
     // SOMENTE ADMINISTRADORES:
         // GET /user/:page/:limit Retorna todos os usuários (somente administradores).
-        router.get('/users/:page/:limit', authenticateToken, isAdmin, user.getUsers);
+        router.get('/users', authenticateToken, isAdmin, user.getUsers);
 
         // GET /user/:cpf: Retorna um usuário em específico (somente administradores).
         router.get('/users/:cpf', authenticateToken, isAdmin, user.getUserByCpf);

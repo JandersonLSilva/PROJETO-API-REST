@@ -3,8 +3,9 @@ const ProductModel = require('../models/Product');
 
 module.exports = {
     list: async (page, limit) =>{
-        const offset = (page - 1) * limit;
-        return await ProductModel.findAll({ offset: offset, limit: Number(limit) });
+        let offset = (page && limit) ? ((page - 1) * limit) : null;
+        if(offset !== null) return await ProductModel.findAll({ offset: offset, limit: Number(limit) });
+        else return await ProductModel.findAll({ offset: 0, limit: 20 });
     },
     save: async (name, description, value, category, quantity) =>{
         return await ProductModel.create({
